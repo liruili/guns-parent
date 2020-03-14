@@ -2,7 +2,6 @@ package com.stylefeng.guns.rest.modular.auth.filter;
 
 import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.util.RenderUtil;
-import com.stylefeng.guns.rest.common.CurrentUser;
 import com.stylefeng.guns.rest.common.exception.BizExceptionEnum;
 import com.stylefeng.guns.rest.config.properties.JwtProperties;
 import com.stylefeng.guns.rest.modular.auth.util.JwtTokenUtil;
@@ -17,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * 对客户端请求的jwt token验证过滤器
@@ -41,30 +39,10 @@ public class AuthFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
-        // 获取忽略列表
-        String ignoreUrl = jwtProperties.getIgnoreUrl();
-        String[] ignoreUrls = ignoreUrl.split(",");
-        // 如果请求是忽略列表的直接放行
-        for (int i = 0; i < ignoreUrls.length; i++) {
-            String url = ignoreUrls[i].trim();
-            if(request.getServletPath().equals(url)){
-                chain.doFilter(request,response);
-                return;
-            }
-        }
-
         final String requestHeader = request.getHeader(jwtProperties.getHeader());
         String authToken = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer ")) {
             authToken = requestHeader.substring(7);
-            //通过token获取userId,并且将之存入ThreadLocal
-            String userId = jwtTokenUtil.getUserIdFromToken(authToken);
-            if(userId == null){
-                return;
-            }else{
-                CurrentUser.saveUserId(userId);
-            }
 
             //验证token是否过期,包含了验证jwt是否正确
             try {

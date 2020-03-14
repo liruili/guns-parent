@@ -1,10 +1,18 @@
 package com.stylefeng.guns.rest.modular.vo;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class ResponseVo<T> {
     // 状态码，0-成功，1-业务异常，999-系统异常
     private int status;
     private String msg;
     private T data;
+    private String imgPre;
 
     private ResponseVo(){};
 
@@ -13,6 +21,14 @@ public class ResponseVo<T> {
         ResponseVo responseVo = new ResponseVo();
         responseVo.setStatus(0);
         responseVo.setData(data);
+        return responseVo;
+    }
+
+    public static<T> ResponseVo success(T data,String imgPre){
+        ResponseVo responseVo = new ResponseVo();
+        responseVo.setStatus(0);
+        responseVo.setData(data);
+        responseVo.setImgPre(imgPre);
         return responseVo;
     }
 
@@ -39,27 +55,4 @@ public class ResponseVo<T> {
         return responseVo;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }
